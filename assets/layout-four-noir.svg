@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 720">
+  <rect width="360" height="720" rx="18" fill="#22201f"/>
+  <g fill="#fbf7f1">
+    <rect x="24" y="58" width="20" height="34" rx="5"/><rect x="316" y="58" width="20" height="34" rx="5"/>
+    <rect x="24" y="146" width="20" height="34" rx="5"/><rect x="316" y="146" width="20" height="34" rx="5"/>
+    <rect x="24" y="234" width="20" height="34" rx="5"/><rect x="316" y="234" width="20" height="34" rx="5"/>
+    <rect x="24" y="322" width="20" height="34" rx="5"/><rect x="316" y="322" width="20" height="34" rx="5"/>
+    <rect x="24" y="410" width="20" height="34" rx="5"/><rect x="316" y="410" width="20" height="34" rx="5"/>
+    <rect x="24" y="498" width="20" height="34" rx="5"/><rect x="316" y="498" width="20" height="34" rx="5"/>
+  </g>
+  <rect x="62" y="52" width="236" height="132" rx="7" fill="#f7efe6"/>
+  <rect x="62" y="204" width="236" height="132" rx="7" fill="#f7efe6"/>
+  <rect x="62" y="356" width="236" height="132" rx="7" fill="#f7efe6"/>
+  <rect x="62" y="508" width="236" height="132" rx="7" fill="#f7efe6"/>
+  <text x="180" y="682" text-anchor="middle" font-family="Arial,sans-serif" font-size="19" font-weight="800" fill="#fbf7f1">PHOTO BOOTH</text>
+</svg>

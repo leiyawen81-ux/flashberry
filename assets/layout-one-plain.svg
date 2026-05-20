@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1090" role="img" aria-label="Paper one-cut photo booth layout">
+  <defs>
+    <linearGradient id="paper" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#e4decf"/><stop offset=".5" stop-color="#e4decf"/><stop offset="1" stop-color="#e4decf"/></linearGradient>
+</defs>
+  <rect width="900" height="1090" fill="url(#paper)"/>
+  <path d="M18 36h864M34 1018h830M52 872c132 18 238-10 366 10 156 24 292-12 428 8" fill="none" stroke="#fff" stroke-opacity=".42" stroke-width="10"/>
+  <rect x="76" y="70" width="748" height="748" fill="#050505"/>
+  <rect x="1" y="1" width="898" height="1088" fill="none" stroke="rgba(35,32,32,.1)" stroke-width="2"/>
+</svg>

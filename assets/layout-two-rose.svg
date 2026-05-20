@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 520">
+  <rect width="360" height="520" rx="18" fill="#f4d8df"/>
+  <pattern id="dots" width="18" height="18" patternUnits="userSpaceOnUse">
+    <circle cx="4" cy="4" r="2.4" fill="#7a625b" opacity=".75"/>
+  </pattern>
+  <rect width="360" height="520" fill="url(#dots)" opacity=".8"/>
+  <rect x="34" y="48" width="292" height="180" rx="5" fill="#715a52"/>
+  <rect x="34" y="260" width="292" height="180" rx="5" fill="#715a52"/>
+  <text x="180" y="484" text-anchor="middle" font-family="Georgia,serif" font-size="34" fill="#715a52">∞</text>
+</svg>

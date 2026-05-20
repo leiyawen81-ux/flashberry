@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Photo Booth Studio</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <nav class="site-nav" aria-label="Photo booth navigation">
+      <button type="button" data-nav-target="home">start</button>
+      <button type="button" data-nav-target="welcome">how it works</button>
+      <button type="button" data-nav-target="layouts">layout</button>
+      <button type="button" data-nav-target="designs">designs</button>
+      <button type="button" data-nav-target="booth">my booth</button>
+    </nav>
+
+    <main class="app-shell" data-screen="home">
+      <section class="landing" id="home" aria-label="Photo Booth Studio home">
+        <p class="site-mark">FLASHBERRY booth🍒</p>
+        <div class="home-inner">
+          <div class="home-copy">
+            <h1 class="hero-title">
+              Create your online
+              <span class="photo-word">photo<span class="camera-pop" aria-hidden="true">📸</span></span>
+              booth.
+            </h1>
+            <p class="landing-text">
+              Turn every moment into a printable memory with adorable and soft-designed photo strips, wherever you are.
+            </p>
+            <button class="primary-action" id="startButton" type="button">
+              Start your booth &rarr;
+            </button>
+          </div>
+
+          <div class="home-visual" aria-label="Four cut photo booth template preview">
+            <img
+              class="hero-template-image"
+              src="assets/home-showcase.png?v=2"
+              alt="Collage of photo booth strip examples"
+            />
+            <div class="layout-smile-note" aria-hidden="true">
+              <span>smile</span>
+              <img src="assets/smile-cutout.png" alt="" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="welcome-page" id="welcomePage" aria-label="Welcome to Flashberry Booth">
+        <button class="ghost-button back-button welcome-back-button" id="welcomeBackButton" type="button">
+          <span aria-hidden="true">←</span> Back
+        </button>
+        <div class="welcome-card">
+          <h2>welcome to flashberry booth ♡</h2>
+          <div class="welcome-copy">
+            <p>From here, you can choose your favorite layouts, customize them your way, and start snapping.</p>
+            <p>Every shot includes a 3-second countdown with unlimited retakes</p>
+            <p>Print your finished photo strips and keep them close forever ♡</p>
+          </div>
+          <button class="primary-action" id="welcomeContinueButton" type="button">
+            Continue
+          </button>
+        </div>
+      </section>
+
+      <section class="layout-picker" id="layoutPicker" aria-label="Choose a photo booth layout">
+        <header class="picker-header">
+          <button class="ghost-button back-button" id="layoutHomeButton" type="button">
+            <span aria-hidden="true">←</span> Back
+          </button>
+          <div>
+            <p class="eyebrow">Choose your layout</p>
+            <h2>Pick a booth style</h2>
+          </div>
+        </header>
+
+        <div class="layout-gallery" id="layoutGallery">
+          <button class="layout-card" type="button" data-layout="polaroid">
+            <img src="assets/layout-preview-1.jpg?v=larger-slots" alt="Single polaroid layout" />
+            <strong>layout1</strong>
+          </button>
+          <button class="layout-card" type="button" data-layout="four">
+            <img src="assets/layout-preview-2.jpg?v=clean-reference-stars" alt="Four pose vertical layout" />
+            <strong>layout2</strong>
+          </button>
+          <button class="layout-card" type="button" data-layout="three">
+            <img src="assets/layout-preview-3.jpg?v=larger-slots" alt="Three pose vertical layout" />
+            <strong>layout3</strong>
+          </button>
+          <button class="layout-card" type="button" data-layout="two">
+            <img src="assets/layout-preview-4.jpg?v=larger-slots" alt="Two pose vertical layout" />
+            <strong>layout4</strong>
+          </button>
+          <button class="layout-card" type="button" data-layout="six">
+            <img src="assets/layout-preview-5.jpg?v=larger-slots" alt="Six pose grid layout" />
+            <strong>layout5</strong>
+          </button>
+          <button class="layout-card" type="button" data-layout="fourgrid">
+            <img src="assets/layout-preview-6.jpg?v=larger-slots" alt="Polaroid two by two four-photo layout" />
+            <strong>layout6</strong>
+          </button>
+        </div>
+
+        <div class="layout-continue">
+          <button class="primary-action" id="layoutContinueButton" type="button" disabled>
+            Continue
+          </button>
+        </div>
+      </section>
+
+      <section class="booth" id="booth" aria-label="Photo booth camera studio">
+        <header class="booth-header">
+          <button class="ghost-button back-button" id="backToLayoutsButton" type="button">
+            <span aria-hidden="true">←</span> Back
+          </button>
+          <div>
+            <h2>Your photo booth</h2>
+          </div>
+        </header>
+
+        <div class="studio-grid" id="studioGrid">
+          <section class="preview-panel" aria-label="Live photo booth preview">
+            <span class="sr-only" id="statusText" aria-live="polite">Design preview</span>
+            <div class="shoot-live-wrap" aria-label="Current shot preview">
+              <canvas id="shootLiveCanvas" width="900" height="900"></canvas>
+            </div>
+            <div class="canvas-wrap">
+              <canvas
+                id="previewCanvas"
+                width="900"
+                height="1920"
+                aria-label="Live photo booth layout preview"
+              ></canvas>
+              <video id="cameraVideo" playsinline muted></video>
+            </div>
+
+            <div class="preview-actions">
+              <section class="inline-tool" aria-label="Photo controls">
+                <h3>Output</h3>
+                <div class="source-actions">
+                  <button class="secondary-action" id="captureButton" type="button">
+                    Freeze Frame
+                  </button>
+                  <button class="secondary-action" id="liveButton" type="button">
+                    Live Again
+                  </button>
+                  <button class="download-button" id="downloadButton" type="button">
+                    Download PNG
+                  </button>
+                </div>
+              </section>
+            </div>
+          </section>
+
+          <aside class="tools-panel" aria-label="Photo booth controls">
+            <section class="tool-block border-options" aria-label="Border style options">
+              <p class="design-title">choose your design</p>
+              <div class="border-scroll" id="frameButtons">
+                <button type="button" data-frame="plain" aria-pressed="true">
+                  <img src="assets/layout-polaroid-plain.svg?v=clean-reference-stars" alt="Star paper border style" />
+                </button>
+                <button type="button" data-frame="midnight" aria-pressed="false">
+                  <img src="assets/template-midnight-heart.jpg" alt="Black polka heart border style" />
+                </button>
+                <button type="button" data-frame="instagram" aria-pressed="false">
+                  <img src="assets/template-instagram.jpg" alt="Instagram caption border style" />
+                </button>
+                <button type="button" data-frame="mint" aria-pressed="false">
+                  <img src="assets/template-mint-star.jpg" alt="Mint star border style" />
+                </button>
+              </div>
+              <button class="confirm-button" id="confirmDesignButton" type="button">
+                Confirm
+              </button>
+            </section>
+          </aside>
+        </div>
+
+        <div class="shoot-controls" id="shootControls" aria-label="Photo booth shooting controls">
+          <button class="primary-action" id="startShootButton" type="button">
+            Start Shooting
+          </button>
+          <button class="secondary-action" id="retakeButton" type="button" hidden>
+            Retake
+          </button>
+          <button class="primary-action" id="doneButton" type="button" hidden>
+            Done
+          </button>
+          <span class="status-only" id="shootStatus" aria-live="polite"></span>
+        </div>
+
+        <div class="countdown-overlay" id="countdownOverlay" aria-live="assertive">
+          <span id="countdownNumber">5</span>
+        </div>
+
+        <div class="finish-overlay" id="finishOverlay" aria-hidden="true">
+          <div class="finish-actions" aria-label="Finished photo actions">
+            <button class="finish-icon-button" id="saveFinalButton" type="button">
+              Save local
+            </button>
+            <button class="finish-icon-button" id="printFinalButton" type="button">
+              Print
+            </button>
+          </div>
+          <div class="finish-card">
+            <p>finished！</p>
+            <canvas id="finishCanvas" width="900" height="1920"></canvas>
+          </div>
+          <button class="finish-again-button" id="finishAgainButton" type="button">
+            Take another one
+          </button>
+        </div>
+
+        <div class="permission-card" id="permissionCard">
+          <p class="eyebrow">Camera access</p>
+          <h3 id="permissionTitle">Ready to turn on camera</h3>
+          <p id="permissionText">
+            Allow camera access when you want to place yourself inside it.
+          </p>
+          <div class="permission-actions">
+            <button class="primary-action" id="retryCameraButton" type="button">
+              Allow Camera
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
