@@ -1,0 +1,52 @@
+name: Sync restored static site
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/sync-final-from-tunnel.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download restored local archive
+        run: |
+          set -euo pipefail
+          curl -fL --retry 5 --retry-delay 3 --retry-all-errors -o /tmp/photobooth-final.tar.gz "https://combined-recruiting-correction-pci.trycloudflare.com/photobooth-final.tar.gz"
+          mkdir -p /tmp/photobooth-final
+          tar -xzf /tmp/photobooth-final.tar.gz -C /tmp/photobooth-final
+
+      - name: Replace repository contents
+        shell: bash
+        run: |
+          set -euo pipefail
+          find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
+          shopt -s dotglob nullglob
+          cp -R /tmp/photobooth-final/* .
+          git status --short
+
+      - name: Commit restored site
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git commit -m "Restore visual transitions and shadows"
+          git push
