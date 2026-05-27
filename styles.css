@@ -39,45 +39,6 @@ body {
   cursor: url("assets/magic-wand-cursor.png?v=wand-cursor-05cm") 5 4, auto;
 }
 
-html.lite-mode *,
-html.lite-mode *::before,
-html.lite-mode *::after {
-  animation: none !important;
-  transition-duration: 0.01ms !important;
-  scroll-behavior: auto !important;
-}
-
-html.lite-mode :is(.site-nav, .welcome-card, .layout-card, .tools-panel, .finish-card, .primary-action, .secondary-action, .ghost-button, .back-button) {
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-}
-
-html.lite-mode :is(.hero-template-image, .layout-card img, #previewCanvas, #shootLiveCanvas, .preview-pushpin, .corner-girl-decoration, .camera-shoot-icon, .finish-card, .border-scroll img) {
-  filter: none !important;
-}
-
-html.lite-mode .camera-pop,
-html.lite-mode .sparkle-click,
-html.lite-mode .corner-eye {
-  display: none !important;
-}
-
-html.lite-mode body {
-  background-attachment: scroll;
-}
-
-html.lite-mode,
-html.lite-mode body,
-html.lite-mode body *,
-html.lite-mode button,
-html.lite-mode a,
-html.lite-mode input,
-html.lite-mode textarea,
-html.lite-mode select,
-html.lite-mode [role="button"] {
-  cursor: auto !important;
-}
-
 img,
 canvas,
 video {
@@ -2324,8 +2285,14 @@ button:focus-visible,
 }
 
 .border-scroll[data-mode="custom-polaroid"] button {
-  --design-shadow: none;
-  --design-shadow-active: none;
+  --design-shadow:
+    drop-shadow(0.28mm 0.38mm 0.12mm rgba(255, 255, 255, 0.36))
+    drop-shadow(0.72mm 1.04mm 0.36mm rgba(45, 31, 28, 0.46))
+    drop-shadow(0 2.45mm 2.05mm rgba(63, 45, 38, 0.25));
+  --design-shadow-active:
+    drop-shadow(0.32mm 0.42mm 0.14mm rgba(255, 255, 255, 0.4))
+    drop-shadow(0.86mm 1.22mm 0.42mm rgba(45, 31, 28, 0.54))
+    drop-shadow(0 2.85mm 2.35mm rgba(63, 45, 38, 0.3));
 }
 
 .border-scroll[data-mode="custom-polaroid"] img {
@@ -2406,8 +2373,14 @@ button:focus-visible,
   --design-shift-y: 0px;
   top: calc(var(--design-row-shift) + var(--design-list-lift, 0px));
   contain: layout style;
-  --design-shadow: none;
-  --design-shadow-active: none;
+  --design-shadow:
+    drop-shadow(0.28mm 0.4mm 0.12mm rgba(255, 255, 255, 0.36))
+    drop-shadow(0.88mm 1.22mm 0.42mm rgba(45, 31, 28, 0.5))
+    drop-shadow(0 2.8mm 2.25mm rgba(63, 45, 38, 0.28));
+  --design-shadow-active:
+    drop-shadow(0.32mm 0.46mm 0.14mm rgba(255, 255, 255, 0.4))
+    drop-shadow(1mm 1.42mm 0.48mm rgba(45, 31, 28, 0.58))
+    drop-shadow(0 3.25mm 2.55mm rgba(63, 45, 38, 0.34));
 }
 
 .border-scroll button:hover,
@@ -2430,7 +2403,7 @@ button:focus-visible,
   object-fit: contain;
   border-radius: 0;
   background: transparent;
-  filter: none;
+  filter: var(--design-shadow);
   transform: translate3d(var(--design-shift-x), var(--design-shift-y), 0) scale(calc(var(--design-scale, 1) * var(--design-scale-boost, 1) * 0.9));
   transform-origin: center center;
   backface-visibility: hidden;
@@ -2485,7 +2458,7 @@ button:focus-visible,
 }
 
 .border-scroll button[aria-pressed="true"] img {
-  filter: none;
+  filter: var(--design-shadow-active);
   transform: translate3d(var(--design-shift-x), calc(var(--design-shift-y) - 0.32mm), 0) scale(calc(var(--design-hover-scale, 1.03) * var(--design-scale-boost, 1) * 0.96));
 }
 
@@ -3263,7 +3236,7 @@ button:not(:disabled):not(.back-button):not(.layout-card):hover {
 }
 
 .border-scroll button[aria-pressed="true"] img {
-  filter: none !important;
+  filter: var(--design-shadow-active) !important;
   transform: translate3d(var(--design-shift-x), var(--design-shift-y), 0) scale(calc(var(--design-scale, 1) * var(--design-scale-boost, 1) * 0.9));
 }
 

@@ -54,12 +54,10 @@ const contactForm = document.getElementById("contactForm");
 const contactFormStatus = document.getElementById("contactFormStatus");
 
 const layoutCherryCount = 7;
-const shootPreviewFrameInterval = 125;
-const designPreviewFrameInterval = 300;
+const shootPreviewFrameInterval = 0;
+const designPreviewFrameInterval = 50;
 const pageButtonPressFeedbackMs = 120;
 const designThumbnailVersion = "design-thumbs-20260528";
-const designOptionInitialBatchSize = 8;
-const designOptionBatchSize = 6;
 let layoutEmojiPlacementTimer = null;
 
 const clickSoundPlayers = Array.from({ length: 4 }, () => {
@@ -1118,10 +1116,8 @@ const customDesignsByLayout = {
   fourgrid: layout6Designs,
 };
 const layout2DesignImages = new Map();
-const customDesignPreviewImages = new Map();
 const customDesignEdgeDepthCanvases = new Map();
 const transparentSlotBoundsByDesign = new Map();
-let designOptionRenderToken = 0;
 
 function stripAssetQuery(src = "") {
   return src.split("?")[0];
@@ -1138,10 +1134,6 @@ function getDesignThumbnailSrc(src) {
     .replace(/\.(?:png|jpe?g)$/i, ".png");
 
   return `${thumbnailPath}?v=${designThumbnailVersion}`;
-}
-
-function scheduleIdleTask(callback) {
-  return window.setTimeout(callback, 180);
 }
 
 function getCustomDesignImage(design, shouldLoad = true) {
@@ -1171,41 +1163,6 @@ function getCustomDesignImage(design, shouldLoad = true) {
   }
 
   return image;
-}
-
-function getCustomDesignPreviewImage(design, shouldLoad = true) {
-  if (!design) {
-    return null;
-  }
-
-  let image = customDesignPreviewImages.get(design.id);
-  if (!image) {
-    image = new Image();
-    image.decoding = "async";
-    image.addEventListener("load", () => {
-      if (state.layout2Design !== design.id || state.confirmed) {
-        return;
-      }
-
-      invalidateFrameCache();
-      customDesignEdgeDepthCanvases.clear();
-      renderBooth(false);
-    });
-    customDesignPreviewImages.set(design.id, image);
-  }
-
-  if (shouldLoad && !image.__photoBoothSrcSet) {
-    image.__photoBoothSrcSet = true;
-    image.src = getDesignThumbnailSrc(design.frameSrc || design.src);
-  }
-
-  return image;
-}
-
-function getRenderDesignImage(design) {
-  return state.confirmed || state.shooting
-    ? getCustomDesignImage(design)
-    : getCustomDesignPreviewImage(design);
 }
 
 function isCustomDesignImageReady(image) {
@@ -2086,7 +2043,7 @@ function pickFirstLayout2Design() {
   const next = designs[0];
   state.layout2Design = next.id;
   state.frame = "layout2-custom";
-  getCustomDesignPreviewImage(next);
+  getCustomDesignImage(next);
   invalidateFrameCache();
 }
 
@@ -2330,9 +2287,7 @@ function activeButtons(container, key, value) {
 
 function refreshSelectedCustomDesign(designId, animatePreview = false) {
   const design = getCustomDesignsForLayout().find((option) => option.id === designId);
-  const selectedImage = state.confirmed || state.shooting
-    ? getCustomDesignImage(design)
-    : getCustomDesignPreviewImage(design);
+  const selectedImage = getCustomDesignImage(design);
   let didAnimateWhenReady = false;
   invalidateFrameCache();
   customDesignEdgeDepthCanvases.clear();
@@ -2375,65 +2330,28 @@ function renderDesignOptions() {
     return;
   }
 
-  designOptionRenderToken += 1;
-  const renderToken = designOptionRenderToken;
-  if (frameButtons.__loadMoreDesignOptions) {
-    frameButtons.removeEventListener("scroll", frameButtons.__loadMoreDesignOptions);
-    frameButtons.__loadMoreDesignOptions = null;
-  }
   frameButtons.textContent = "";
   const options = customOptions.length ? customOptions : defaultFrameOptions;
-  let nextOptionIndex = 0;
-  const renderNextBatch = (startIndex) => {
-    if (renderToken !== designOptionRenderToken) {
-      return;
+  options.forEach((option, index) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    if (customOptions.length) {
+      button.dataset.layout2Design = option.id;
+      button.dataset.designPosition = String(index + 1);
+    } else {
+      button.dataset.frame = option.id;
     }
+    button.setAttribute("aria-pressed", "false");
 
-    const endIndex = Math.min(options.length, startIndex + (startIndex ? designOptionBatchSize : designOptionInitialBatchSize));
-    const fragment = document.createDocumentFragment();
-    for (let index = startIndex; index < endIndex; index += 1) {
-      const option = options[index];
-      const button = document.createElement("button");
-      button.type = "button";
-      if (customOptions.length) {
-        button.dataset.layout2Design = option.id;
-        button.dataset.designPosition = String(index + 1);
-      } else {
-        button.dataset.frame = option.id;
-      }
-      button.setAttribute("aria-pressed", "false");
-
-      const image = document.createElement("img");
-      image.src = customOptions.length ? getDesignThumbnailSrc(option.frameSrc || option.src) : option.src;
-      image.alt = option.alt || "Photo booth design";
-      image.decoding = "async";
-      image.loading = index < 2 ? "eager" : "lazy";
-      image.fetchPriority = index === 0 ? "auto" : "low";
-      button.appendChild(image);
-      fragment.appendChild(button);
-    }
-
-    frameButtons.appendChild(fragment);
-    nextOptionIndex = endIndex;
-    activeButtons(frameButtons, customOptions.length ? "layout2Design" : "frame", customOptions.length ? state.layout2Design : state.frame);
-  };
-
-  renderNextBatch(0);
-  if (nextOptionIndex < options.length) {
-    frameButtons.__loadMoreDesignOptions = () => {
-      if (renderToken !== designOptionRenderToken || nextOptionIndex >= options.length) {
-        return;
-      }
-
-      const distanceFromBottom = frameButtons.scrollHeight - frameButtons.scrollTop - frameButtons.clientHeight;
-      if (distanceFromBottom > 520) {
-        return;
-      }
-
-      scheduleIdleTask(() => renderNextBatch(nextOptionIndex));
-    };
-    frameButtons.addEventListener("scroll", frameButtons.__loadMoreDesignOptions, { passive: true });
-  }
+    const image = document.createElement("img");
+    image.src = customOptions.length ? getDesignThumbnailSrc(option.frameSrc || option.src) : option.src;
+    image.alt = option.alt || "Photo booth design";
+    image.decoding = "async";
+    image.loading = index < 2 ? "eager" : "lazy";
+    image.fetchPriority = index === 0 ? "auto" : "low";
+    button.appendChild(image);
+    frameButtons.appendChild(button);
+  });
 
   state.frameOptionsMode = mode;
 }
@@ -3317,9 +3235,8 @@ function getCachedFrameBase(geometry) {
   const textureState = paperTextureImage.complete && paperTextureImage.naturalWidth ? "paper-ready" : "paper-loading";
   const rasterState = sixLayoutFrameImage.complete && sixLayoutFrameImage.naturalWidth ? "six-ready" : "six-loading";
   const layout2Design = getActiveLayout2Design();
-  const layout2Image = layout2Design ? getRenderDesignImage(layout2Design) : null;
-  const designRenderQuality = state.confirmed || state.shooting ? "full" : "preview";
-  const layout2State = layout2Image?.complete && layout2Image.naturalWidth ? `${layout2Design.id}-${designRenderQuality}-ready` : `${layout2Design?.id || "none"}-${designRenderQuality}-loading`;
+  const layout2Image = layout2Design ? getCustomDesignImage(layout2Design) : null;
+  const layout2State = layout2Image?.complete && layout2Image.naturalWidth ? `${layout2Design.id}-ready` : `${layout2Design?.id || "none"}-loading`;
   const key = `${state.layout || "four"}|${state.frame}|${state.layout2Design || "none"}|${geometry.width}x${geometry.height}|${textureState}`;
   const cacheKey = `${key}|${rasterState}|${layout2State}`;
 
@@ -3372,7 +3289,7 @@ function renderBooth(scheduleNext = true) {
 
   const baseFrame = getCachedFrameBase(geometry);
   const layout2Design = getActiveLayout2Design();
-  const layout2Image = layout2Design ? getRenderDesignImage(layout2Design) : null;
+  const layout2Image = layout2Design ? getCustomDesignImage(layout2Design) : null;
   const hasCustomLayout2Frame = Boolean(layout2Image?.complete && layout2Image.naturalWidth);
   previewCtx.clearRect(0, 0, geometry.width, geometry.height);
   if (!hasCustomLayout2Frame) {
