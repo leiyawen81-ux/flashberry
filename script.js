@@ -57,7 +57,6 @@ const layoutCherryCount = 7;
 const shootPreviewFrameInterval = 0;
 const designPreviewFrameInterval = 50;
 const pageButtonPressFeedbackMs = 120;
-const designThumbnailVersion = "design-thumbs-20260528";
 let layoutEmojiPlacementTimer = null;
 
 const clickSoundPlayers = Array.from({ length: 4 }, () => {
@@ -1118,23 +1117,6 @@ const customDesignsByLayout = {
 const layout2DesignImages = new Map();
 const customDesignEdgeDepthCanvases = new Map();
 const transparentSlotBoundsByDesign = new Map();
-
-function stripAssetQuery(src = "") {
-  return src.split("?")[0];
-}
-
-function getDesignThumbnailSrc(src) {
-  const assetPath = stripAssetQuery(src);
-  if (!/^assets\/layout\d-designs\/.+\.(?:png|jpe?g)$/i.test(assetPath)) {
-    return src;
-  }
-
-  const thumbnailPath = assetPath
-    .replace(/^assets\//, "assets/design-thumbs/")
-    .replace(/\.(?:png|jpe?g)$/i, ".png");
-
-  return `${thumbnailPath}?v=${designThumbnailVersion}`;
-}
 
 function getCustomDesignImage(design, shouldLoad = true) {
   if (!design) {
@@ -2344,7 +2326,7 @@ function renderDesignOptions() {
     button.setAttribute("aria-pressed", "false");
 
     const image = document.createElement("img");
-    image.src = customOptions.length ? getDesignThumbnailSrc(option.frameSrc || option.src) : option.src;
+    image.src = customOptions.length ? option.frameSrc || option.src : option.src;
     image.alt = option.alt || "Photo booth design";
     image.decoding = "async";
     image.loading = index < 2 ? "eager" : "lazy";
