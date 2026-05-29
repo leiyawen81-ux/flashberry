@@ -1821,12 +1821,15 @@ function setScreen(screen) {
   if (screen !== "booth") {
     resetActiveFilter();
     scheduleDesignScrollReset();
+    scheduleFilterScrollReset();
   }
   window.requestAnimationFrame(() => {
     appShell.classList.add("screen-transition");
   });
   if (screen === "layouts") {
     scheduleLayoutEmojis();
+  } else if (screen === "booth") {
+    scheduleFilterScrollReset();
   } else if (layoutEmojiField) {
     layoutEmojiField.textContent = "";
   }
@@ -1856,6 +1859,9 @@ function setStudioVisible(isVisible) {
 
 function setShootMode(isShootMode) {
   document.getElementById("booth").classList.toggle("shoot-mode", isShootMode);
+  if (isShootMode) {
+    scheduleFilterScrollReset();
+  }
 }
 
 function replayClassAnimation(element, className, duration = 0) {
@@ -2347,6 +2353,15 @@ function resetDesignScrollPosition() {
   frameButtons.scrollLeft = 0;
 }
 
+function resetFilterScrollPosition() {
+  if (!filterButtons) {
+    return;
+  }
+  filterButtons.scrollTo?.({ top: 0, left: 0, behavior: "auto" });
+  filterButtons.scrollTop = 0;
+  filterButtons.scrollLeft = 0;
+}
+
 function scheduleDesignScrollReset() {
   resetDesignScrollPosition();
   window.requestAnimationFrame(() => {
@@ -2355,6 +2370,16 @@ function scheduleDesignScrollReset() {
   });
   window.setTimeout(resetDesignScrollPosition, 0);
   window.setTimeout(resetDesignScrollPosition, 120);
+}
+
+function scheduleFilterScrollReset() {
+  resetFilterScrollPosition();
+  window.requestAnimationFrame(() => {
+    resetFilterScrollPosition();
+    window.requestAnimationFrame(resetFilterScrollPosition);
+  });
+  window.setTimeout(resetFilterScrollPosition, 0);
+  window.setTimeout(resetFilterScrollPosition, 120);
 }
 
 function syncControls() {
